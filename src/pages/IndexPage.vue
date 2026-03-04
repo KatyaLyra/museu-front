@@ -5,7 +5,7 @@
       src="~assets/quasar-logo-vertical.svg"
       style="width: 200px; height: 200px"
     >
-    <q-btn to="cadusuarios">cadusarios</q-btn>
+    <q-btn to="cadusuarios">Cadastro de usuários</q-btn>
   </q-page>
 </template>
 
