@@ -40,6 +40,11 @@ export default defineConfig((/* ctx */) => {
         node: 'node20'
       },
 
+      // Garanta que o pré-processador saiba onde estão as variáveis
+    scssLoaderOptions: {
+      additionalData: `@import "src/css/quasar.variables.scss";`
+    },
+
       vueRouterMode: 'hash', // available values: 'hash', 'history'
       // vueRouterBase,
       // vueDevtools,
