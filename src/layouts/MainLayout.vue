@@ -1,41 +1,59 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
-      <q-toolbar color="primary">
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
+      <q-toolbar class="bg-primary text-white"> <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title>
-          Teste
+          Museu UNICAP
+          <div class="text-subtitle2">Agendamento de visitas</div>
         </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
+        <q-btn flat round dense
+         @click="rightDrawerOpen = !rightDrawerOpen">
+          <div class="row items-center no-wrap">
+            <div class="q-ml-sm q-mr-md text-weight-medium gt-xs nickname-text">
+              {{ usuarioLogado.apelido }}
+            </div>
+            <q-icon name="account_circle" size="28px" />
+          </div>
+        </q-btn>
       </q-toolbar>
     </q-header>
 
     <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
+      v-model="drawerState" 
+      side="left"
       bordered
+      persistent
+      :mini="!leftDrawerOpen"
+      @mouseover="leftDrawerOpen = true"
+      @mouseleave="leftDrawerOpen = false"
+      :width="260"
+      :mini-width="80"
+      class="bg-grey-1"
     >
-      <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
+      <q-scroll-area class="fit">
+        <q-list padding>
+          <EssentialLink
+            v-for="link in rotinasLinks"
+            :key="link.title"
+            v-bind="link"
+          />
+        </q-list>
+      </q-scroll-area>
+    </q-drawer>
 
+    <q-drawer v-model="rightDrawerOpen" side="right" overlay bordered>
+      <q-list padding>
         <EssentialLink
-          v-for="link in linksList"
+          v-for="link in perfilLinks"
           :key="link.title"
           v-bind="link"
         />
+        <q-separator spaced />
+        <q-item clickable v-ripple class="text-red" @click="logout">
+          <q-item-section avatar><q-icon name="logout" color="red" /></q-item-section>
+          <q-item-section>Sair da Conta</q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
@@ -46,57 +64,35 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
+import { api } from 'boot/axios'
 import EssentialLink from 'components/EssentialLink.vue'
 
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-]
-
 const leftDrawerOpen = ref(false)
+const rightDrawerOpen = ref(false)
 
-function toggleLeftDrawer () {
+// Esta variável 'drawerState' sempre fica true no Desktop para o Mini Mode funcionar
+// Se você quiser que o menu suma totalmente no celular, a lógica muda levemente
+const drawerState = ref(true) 
+
+const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
+
+const rotinasLinks = [
+  { title: 'Home', icon: 'home', link: '/' },
+  { title: 'Usuários', icon: 'people', caption: 'Cadastro de usuários', link: '/cadusuarios' },
+  { title: 'Tipos de Visita', icon: 'visibility', link: '/cadtiposvisita' },
+  { title: 'Bloqueio de Datas', icon: 'event_busy', link: '/cadbloqueiodatas' },
+  { title: 'Aulas de Visita', icon: 'school', link: '/cadtiposaula' }
+]
+
+const perfilLinks = [
+  { title: 'Alterar Perfil', icon: 'manage_accounts', link: '/altusuario' },
+  { title: 'Alterar Senha', icon: 'lock', link: '/altsenha' }
+]
+
+const usuarioLogado = reactive({
+  apelido: localStorage.getItem('user_nickname') || 'Visitante'
+});
 </script>

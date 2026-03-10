@@ -1,11 +1,13 @@
 <template>
   <q-page class="flex flex-center">
     <img
-      alt="Quasar logo"
-      src="~assets/quasar-logo-vertical.svg"
-      style="width: 200px; height: 200px"
+      alt="Museu logo"
+      src="~assets/logo-museu.png"
+      style="width: 525px; height: 226px"
     >
-    <q-btn to="cadusuarios">Cadastro de usuários</q-btn>
+<!--
+/*    <q-btn to="cadusuarios">Cadastro de usuários</q-btn>*/
+-->
   </q-page>
 </template>
 

@@ -11,7 +11,8 @@ export default defineConfig((/* ctx */) => {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
-    boot: [
+   boot: [
+    'axios', // Asegúrate de que 'axios' esté en la lista
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css
@@ -45,7 +46,7 @@ export default defineConfig((/* ctx */) => {
       additionalData: `@import "src/css/quasar.variables.scss";`
     },
 
-      vueRouterMode: 'hash', // available values: 'hash', 'history'
+      vueRouterMode: 'history', // available values: 'hash', 'history'
       // vueRouterBase,
       // vueDevtools,
       // vueOptionsAPI: false,

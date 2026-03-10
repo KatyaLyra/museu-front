@@ -1,2 +1,9 @@
 /* app global css */
 nav { background-color: var(--q-primary); }
+.subtitle { font-size: 0.8rem; color: rgb(236, 213, 182); }
+.nickname-text {
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
