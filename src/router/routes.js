@@ -8,8 +8,7 @@ const routes = [
       { path: 'cadusuarios', component: () => import('src/pages/cadastros/CadUsuarios.vue') },
       { path: 'cadtiposaula', component: () => import('src/pages/cadastros/CadTiposAula.vue') },
       { path: 'cadtiposvisita', component: () => import('src/pages/cadastros/CadTiposVisita.vue') },
-      { path: '/cadbloqueiodatas', component: () => import('src/pages/cadastros/CadDatasBloqueio.vue') },
-
+      { path: 'cadbloqueiodatas', component: () => import('src/pages/cadastros/CadDatasBloqueio.vue') },
       { path: 'altusuario', component: () => import('src/pages/perfil/AltUsuario.vue') },
       { path: 'altsenha', component: () => import('src/pages/perfil/AltSenha.vue') }
    

@@ -65,7 +65,7 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
-import { api } from 'boot/axios'
+//import { api } from 'boot/axios'
 import EssentialLink from 'components/EssentialLink.vue'
 
 const leftDrawerOpen = ref(false)
@@ -95,4 +95,6 @@ const perfilLinks = [
 const usuarioLogado = reactive({
   apelido: localStorage.getItem('user_nickname') || 'Visitante'
 });
+
+localStorage.setItem('token', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJrYXR5YS5seXJhQHVuaWNhcC5iciIsImlzcyI6IkFQSSBDb25zZW5zbyIsImV4cCI6MTc3MzE4NDY2NH0.v8y3Br1H3pMHzv1mpU5MYexQCwZq9VI97suqMYDm3ZQ')
 </script>
