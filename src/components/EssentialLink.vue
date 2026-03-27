@@ -4,6 +4,7 @@
     tag="a"
     target="_self"
     :href="props.link"
+    @click="rightDrawerOpen = false"
   >
     <q-item-section v-if="icon" avatar>
       <q-icon :name="icon" color="primary" />

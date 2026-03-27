@@ -9,23 +9,6 @@
         <q-form @submit="onSubmit" class="q-gutter-md">
           <q-input
             filled
-            v-model="form.currentPassword"
-            label="Senha Atual"
-            :type="isPwdOld ? 'password' : 'text'"
-            hint="Sua senha cadastrada no momento"
-            color="primary"
-          >
-            <template v-slot:append>
-              <q-icon
-                :name="isPwdOld ? 'visibility_off' : 'visibility'"
-                class="cursor-pointer"
-                @click="isPwdOld = !isPwdOld"
-              />
-            </template>
-          </q-input>
-
-          <q-input
-            filled
             v-model="form.newPassword"
             label="Nova Senha"
             :type="isPwdNew ? 'password' : 'text'"
@@ -73,13 +56,15 @@
 </template>
 
 <script setup>
+import { api } from 'boot/axios'
 import { ref, reactive } from 'vue'
 import { useQuasar } from 'quasar'
+import { useRouter } from 'vue-router' // Adicionado
 
 const $q = useQuasar()
+const router = useRouter()
 
 // Estados para visibilidade da senha (olhinho)
-const isPwdOld = ref(true)
 const isPwdNew = ref(true)
 const isPwdConfirm = ref(true)
 
@@ -89,13 +74,49 @@ const form = reactive({
   confirmPassword: ''
 })
 
-const onSubmit = () => {
-  // Aqui entraria a chamada para sua API
-  $q.notify({
-    color: 'positive',
-    position: 'top',
-    message: 'Senha alterada com sucesso!',
-    icon: 'done'
+const onSubmit = async () => {
+ $q.dialog({
+    title: 'Sair',
+    message: 'Deseja realmente alterar sua senha?',
+    cancel: true,
+    persistent: true
+  }).onOk( async () => {
+
+    try {
+      const token = localStorage.getItem('token');
+      const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+      const userIn = {
+          codigo:  usuarioLogado.codigo,
+          nome:    usuarioLogado.nome,
+          novaSenha:   form.newPassword
+      }
+
+      const response = await api.post('/acesso/alterarSenha', userIn , {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const usrOut = response.data;
+
+      if (usrOut) {
+        localStorage.setItem('usuarioLogado', JSON.stringify(usrOut));
+        usuarioLogado.apelido = usrOut.apelido;
+      }      
+      $q.notify({
+        color: 'positive',
+        position: 'top',
+        message: 'Senha alterada com sucesso!',
+        icon: 'done'
+      })
+      router.push('/menu')   
+    } catch (error) {
+      console.error("Erro na autenticação ou token expirado:", error);
+      localStorage.removeItem('token')
+      localStorage.removeItem('usuarioLogado')
+    }
+
   })
 }
 </script>

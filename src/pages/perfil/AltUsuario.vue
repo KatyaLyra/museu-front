@@ -52,7 +52,12 @@
                 hint="Ex: (81) 99999-9999"
                 color="primary"
                 lazy-rules
-                :rules="[ val => val && val.length >= 14 || 'Telefone inválido']"
+                :rules="[ 
+                      val => {
+                        const apenasNumeros = val.replace(/\D/g, '');
+                        return apenasNumeros.length === 11 || 'O celular deve ter 11 dígitos (com DDD)';
+                      }
+                ]"
               >
                 <template v-slot:prepend>
                   <q-icon name="smartphone" color="primary" />
@@ -72,24 +77,73 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { api } from 'boot/axios'
+import { ref } from 'vue'
 import { useQuasar } from 'quasar'
+import { useRouter } from 'vue-router' // Adicionado
 
 const $q = useQuasar()
+const router = useRouter()
 
+let usuarioLogado = null;
+if (!usuarioLogado) {
+  const salvo = localStorage.getItem('usuarioLogado');
+  if (salvo) {
+    usuarioLogado = JSON.parse(salvo);
+  }
+}
 // Dados iniciais (Geralmente viriam de uma API ou Store)
-const user = reactive({
-  nome: 'Fulano de Tal',
-  apelido: 'fulano.unicap',
-  celular: '81988887777'
-})
-
-const onSubmit = () => {
-  $q.notify({
-    color: 'positive',
-    icon: 'cloud_done',
-    message: 'Perfil atualizado com sucesso!',
-    timeout: 2000
+  const user = ref({
+    nome: usuarioLogado.nome,
+    apelido: usuarioLogado.apelido,
+    celular: usuarioLogado.celular.foneCadastro,
+    celular_ddd: usuarioLogado.celular.ddd,
+    celular_numero: usuarioLogado.celular.numero
   })
+
+const onSubmit = async () => {
+    try {
+        const token = localStorage.getItem('token');
+        const apenasNumeros = user.value.celular.replace(/\D/g, '')
+        const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+        const userIn = {
+            codigo:  usuarioLogado.codigo,
+            nome:    user.value.nome,
+            email:   usuarioLogado.email,
+            apelido: user.value.apelido,
+            celular: {
+              ddi: usuarioLogado.celular.ddi,
+              ddd: apenasNumeros.slice(0, 2),
+              numero: apenasNumeros.slice(2)
+            } 
+        }
+
+        const response = await api.post('/acesso/alterarPerfil', userIn, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const usrOut = response.data;
+
+        if (usrOut) {
+          localStorage.setItem('usuarioLogado', JSON.stringify(usrOut));
+          usuarioLogado.apelido = usrOut.apelido;
+          window.dispatchEvent(new Event('user-updated'))
+        }
+        $q.notify({
+          color: 'positive',
+          icon: 'cloud_done',
+          message: 'Perfil atualizado com sucesso!',
+          timeout: 2000
+        })
+
+        router.push('/menu')   
+      } catch (error) {
+        console.error("Erro na autenticação ou token expirado:", error);
+        localStorage.removeItem('token')
+        localStorage.removeItem('usuarioLogado')
+      }
 }
 </script>

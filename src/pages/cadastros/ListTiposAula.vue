@@ -2,12 +2,12 @@
   <q-page class="flex flex-center">
     <q-card style="width: 100%; max-width: 1200px" flat bordered>
       <q-card-section class="bg-primary text-white">
-        <div class="text-h6">Cadastro de Tipos de Visita</div>
+        <div class="text-h6">Cadastro de tipos de aula</div>
       </q-card-section>
       <q-separator />
-      <q-card-section>
+      <q-card-section>	
 		<q-table
-		:rows="tiposVisita"
+		:rows="tiposAula"
 		:columns="columns"
 		rows-per-page-label="Registros por página:"
   		no-data-label="Nenhum dado disponível"
@@ -45,57 +45,82 @@
 			</q-td>
 		</template>
 		</q-table>
+		<div class="row justify-center q-pa-md">
+			<q-btn fab icon="add" color="primary" @click="adicionar">
+				<q-tooltip>Incluir</q-tooltip>
+			</q-btn>
+		</div>    
       </q-card-section>
     </q-card>
   </q-page>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { useRouter } from 'vue-router' // Adicionado
+
+const router = useRouter()
 
 const columns = [
   { name: 'descricao', label: 'Descrição', field: 'descricao', align: 'left', sortable: true },
-  { name: 'duracao', label: 'Duração', field: 'duracaoVisita', align: 'left', sortable: true },
-  { name: 'valor', label: 'Valor', field: 'valorAulaVisitaFMT', align: 'center', sortable: true },
-  { name: 'qtd', label: 'Qtd. aulas', field: 'qtdAulaVisita', align: 'center', sortable: true },
-  { name: 'acoes', label: '', field: 'acoes', align: 'center' } // Coluna para os botões
+  { name: 'acoes', label: '', field: 'acoes', align: 'center',style: 'width: 100px', headerStyle: 'width: 100px' } // Coluna para os botões
 ]
 
 const pagination = ref({
   sortBy: 'descricao', // Coluna que inicia ordenada
   descending: false,    // Ordem crescente (false) ou decrescente (true)
   page: 1,              // Página inicial
-  rowsPerPage: 10       // <--- AQUI: define 10 registros por página
+  rowsPerPage: 5       // <--- AQUI: define 10 registros por página
 })
 
 // Opções que o usuário pode escolher no seletor
 const linhasPorPagina = [5, 10, 20, 50, 0] // 0 geralmente significa "Todos"
+
+const adicionar = (row) => {
+	localStorage.setItem('tipoaula', JSON.stringify(row));
+	localStorage.setItem('operacao', 'I');
+	router.push({ name: 'tipoaulacadastro', params: { operacao: 'I'}})
+}
+const editar = (row) => {
+	localStorage.setItem('tipoaula', JSON.stringify(row));
+	localStorage.setItem('operacao', 'U');
+	router.push({ name: 'tipoaulacadastro', params: { operacao: 'U'}})
+}
+const excluir = (row) => {
+	localStorage.setItem('tipoaula', JSON.stringify(row));
+	localStorage.setItem('operacao', 'D');
+	router.push({ name: 'tipoaulacadastro', params: { operacao: 'D'}})
+}
+
 </script>
 <script>
 import { api } from 'boot/axios'
-//import { ref } from 'vue'
+import { ref } from 'vue'
 
 export default {
-	name: 'TiposVisita',
+	name: 'listaTiposAula',
 	data() {
 		return {
-			tiposVisita:[]
+			tiposAula:[]
 		}
 	},
 	mounted() {
-		this.consultarTiposVisita()
+		this.consultarTiposAula()
 	},
 	methods: {
-		async consultarTiposVisita() {
+		async consultarTiposAula() {
+			this.$q.loading.show({delay: 400 })
 			try {
-				const response = await api.post('/visitas/consultarTiposVisita')
-				this.tiposVisita = response.data
-			} catch (error) {
-				console.error(error)
+				const response = await api.post('/visitas/consultarTiposAula')
+				this.tiposAula = response.data
+			} 
+			catch (error) {
+				console.log('Falha de conexão com o servidor'+error);
+				this.rows = []; // Limpa a tabela para não travar
+			}
+			finally {
+				this.$q.loading.hide()
 			}
 		}
 
 	}
 }
-
-
 </script>

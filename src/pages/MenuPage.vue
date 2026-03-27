@@ -5,9 +5,6 @@
       src="~assets/logo-museu.png"
       style="width: 525px; height: 226px"
     >
-<!--
-/*    <q-btn to="cadusuarios">Cadastro de usuários</q-btn>*/
--->
   </q-page>
 </template>
 
