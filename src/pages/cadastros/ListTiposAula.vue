@@ -21,6 +21,16 @@
 		>
 		<template v-slot:body-cell-acoes="props">
 			<q-td :props="props">
+							<q-btn 
+				flat 
+				round 
+				color="primary" 
+				icon="search" 
+				size="sm"
+				@click="consultar(props.row)"
+			>
+				<q-tooltip>Consultar</q-tooltip>
+			</q-btn>
 			<q-btn 
 				flat 
 				round 
@@ -74,6 +84,11 @@ const pagination = ref({
 // Opções que o usuário pode escolher no seletor
 const linhasPorPagina = [5, 10, 20, 50, 0] // 0 geralmente significa "Todos"
 
+const consultar = (row) => {
+	localStorage.setItem('tipoaula', JSON.stringify(row));
+	localStorage.setItem('operacao', 'C');
+	router.push({ name: 'tipoaulacadastro', params: { operacao: 'C'}})
+}
 const adicionar = (row) => {
 	localStorage.setItem('tipoaula', JSON.stringify(row));
 	localStorage.setItem('operacao', 'I');
@@ -107,9 +122,15 @@ export default {
 	},
 	methods: {
 		async consultarTiposAula() {
+			const token = localStorage.getItem('token');
 			this.$q.loading.show({delay: 400 })
 			try {
-				const response = await api.post('/visitas/consultarTiposAula')
+				const response = await api.post('/visitas/consultarTiposAula', {}, {
+						headers: {
+							'Authorization': `Bearer ${token}`,
+							'Content-Type': 'application/json'
+						}
+				});
 				this.tiposAula = response.data
 			} 
 			catch (error) {

@@ -16,7 +16,7 @@
                 emit-value
                 map-options
                 outlined
-                :readonly="isConsulta"
+                :readonly="isConsulta || isDelete"
                 :rules="[val => !!val || 'Campo obrigatório']"
               />
           </div>
@@ -33,7 +33,7 @@
                 emit-value
                 map-options
                 outlined
-                :readonly="isConsulta"
+                :readonly="isConsulta || isDelete"
                 :rules="[val => !formulario.comEscola || (!!val || 'Campo obrigatório')]"
               />
           </div>
@@ -44,7 +44,7 @@
               type="descricao"
               class="col-12 col-sm-10 offset-sm-1"
               outlined
-              :readonly="isConsulta"
+              :readonly="isConsulta || isDelete"
               :rules="[val => !!val || 'Campo obrigatório']"
             />
           </div>
@@ -54,7 +54,7 @@
                 v-model="formulario.duracao"
                 label="Duração"
                 outlined
-                :readonly="isConsulta"
+                :readonly="isConsulta || isDelete"
                 :rules="[val => !!val || 'Campo obrigatório']"
               />
             </div>
@@ -65,7 +65,7 @@
                 mask="#.##"
                 reverse-fill-mask
                 outlined
-                :readonly="isConsulta"
+                :readonly="isConsulta || isDelete"
               />
             </div>
           </div>
@@ -77,7 +77,7 @@
                 label="Valor (individual)"
                 prefix="R$"
                 outlined
-                :readonly="isConsulta"
+                :readonly="isConsulta || isDelete"
                 :rules="[val => !!val || 'Campo obrigatório']"
               />
             </div>
@@ -87,7 +87,7 @@
                 :options="opcoesAulas"
                 label="Qtd. aulas"
                 outlined
-                :readonly="isConsulta"
+                :readonly="isConsulta || isDelete"
                 :rules="[val => !!val || 'Campo obrigatório']"
               />
             </div>
@@ -114,7 +114,11 @@ const router = useRouter()
 const $q = useQuasar()
 
 const isConsulta = computed(() => {
-  return router.currentRoute.value.params.operacao === 'C' 
+  return router.currentRoute.value.params.operacao === 'C'
+})
+
+const isDelete = computed(() => {
+  return router.currentRoute.value.params.operacao === 'D'
 })
 
 const formulario = ref({
@@ -242,7 +246,7 @@ const onSubmit = async () => {
 
       localStorage.removeItem('operacao')
       localStorage.removeItem('tipoVisita')
-      router.push('/cadtiposvisita')
+      router.push('/listtiposvisita')
 
     } 
     catch (error) {

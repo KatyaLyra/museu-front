@@ -3,7 +3,7 @@
     <q-header elevated >
       <q-toolbar class="bg-primary text-white">
         <q-btn flat dense round 
-        v-if="$route.path !== '/'"
+        v-if="auth.usuario !== null"
         icon="menu" aria-label="Menu" 
         @click="toggleLeftDrawer" 
         />
@@ -12,21 +12,18 @@
           Museu UNICAP
           <div class="text-subtitle2">Agendamento de visitas</div>
         </q-toolbar-title>
-        <q-btn flat round dense
-        v-if="$route.path !== '/'"
-         @click="rightDrawerOpen = !rightDrawerOpen">
-          <div class="row items-center no-wrap">
-            <div class="q-ml-sm q-mr-md text-weight-medium gt-xs nickname-text">
-             {{ usuarioLogado?.apelido || 'Visitante' }}
-            </div>
-            <q-icon name="account_circle" size="28px" />
-          </div>
-        </q-btn>
+        <div class="row items-center no-wrap" >
+          <q-btn flat no-caps icon="person" 
+           @click="rightDrawerOpen = !rightDrawerOpen"
+          v-model="rightDrawerOpen" 
+          :label="auth.usuario.apelido" 
+          v-if="auth.usuario !== null" />
+        </div>        
       </q-toolbar>
     </q-header>
 
     <q-drawer
-      v-if="$route.path !== '/'"
+      v-if="auth.usuario !== null"
       v-model="drawerState" 
       side="left"
       bordered
@@ -49,7 +46,9 @@
       </q-scroll-area>
     </q-drawer>
 
-    <q-drawer v-model="rightDrawerOpen" side="right" overlay bordered>
+    <q-drawer 
+    v-if="auth.usuario !== null"
+    v-model="rightDrawerOpen" side="right" overlay bordered>
       <q-list padding>
         <EssentialLink
           v-for="link in perfilLinks"
@@ -57,10 +56,15 @@
           v-bind="link"
         />
         <q-separator spaced />
-        <q-item clickable v-ripple class="text-red" @click="logout">
-          <q-item-section avatar><q-icon name="logout" color="red" /></q-item-section>
-          <q-item-section>Sair da Conta</q-item-section>
-        </q-item>
+          <q-item clickable v-ripple class="text-red" @click="logout">
+            <q-item-section avatar>
+              <q-icon name="logout" />
+            </q-item-section>
+
+            <q-item-section>
+              <q-item-label>Sair</q-item-label>
+            </q-item-section>
+          </q-item>
       </q-list>
     </q-drawer>
 
@@ -71,14 +75,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
-import { api } from 'boot/axios'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router' // Adicionado
 import { useQuasar } from 'quasar'    // Adicionado
+import { useAuthStore } from 'src/stores/auth';
 import EssentialLink from 'components/EssentialLink.vue'
 
 const router = useRouter()
 const $q = useQuasar()
+const auth = useAuthStore();
 
 const leftDrawerOpen = ref(false)
 const rightDrawerOpen = ref(false)
@@ -91,31 +96,12 @@ const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
 
-// Função para buscar o dado atualizado
-const atualizarDadosUsuario = () => {
-  usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado') || '{}')
- // apelido = usuarioLogado?.apelido || 'Visitante';
-}
-
-onMounted(() => {
-  atualizarDadosUsuario()
-  // Escuta o evento que você criou
-  window.addEventListener('user-updated', atualizarDadosUsuario)
-})
-
-// Isso garante que o nome atualize ao mudar de página
-watch(() => router.path, () => {
-  atualizarDadosUsuario()
-  // Se quiser fechar o drawer aqui também:
-  // rightDrawerOpen.value = false
-})
-
 const rotinasLinks = [
   { title: 'Home', icon: 'home', link: '/' },
   { title: 'Usuários', icon: 'people', caption: 'Cadastro de usuários', link: '/cadusuarios' },
-  { title: 'Tipos de visita', icon: 'visibility', caption: 'Cadastro de tipos de visita', link: '/cadtiposvisita' },
-  { title: 'Bloqueio de agenda', icon: 'event_busy', caption: 'Cadastro de bloqueio de agenda', link: '/cadbloqueiodatas' },
-  { title: 'Aulas de visita', icon: 'school', caption: 'Cadastro de aulas de visita', link: '/cadtiposaula' }
+  { title: 'Tipos de visita', icon: 'visibility', caption: 'Cadastro de tipos de visita', link: '/listtiposvisita' },
+  { title: 'Bloqueio de agenda', icon: 'event_busy', caption: 'Cadastro de bloqueio de agenda', link: '/listbloqueiodatas' },
+  { title: 'Aulas de visita', icon: 'school', caption: 'Cadastro de aulas de visita', link: '/listtiposaula' }
 ]
 
 const perfilLinks = [
@@ -131,47 +117,8 @@ const logout = () => {
     cancel: true,
     persistent: true
   }).onOk(() => {
-
-    rightDrawerOpen.value = false;
-    localStorage.removeItem('token')
-    localStorage.removeItem('usuarioLogado')
-
-    // Redireciona para o login
-    router.push('login')
-
+    auth.logout();
+    router.push('/login');
   })
 }
 </script>
-<script>
-const token = localStorage.getItem('token');
-let usuarioLogado = null;
-if (token != null) {
-    try {
-         const response = await api.post('/acesso/consultarUsuarioLogado', {}, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-
-        const usrOut = response.data;
-
-        if (usrOut) {
-          localStorage.setItem('usuarioLogado', JSON.stringify(usrOut));
-          usuarioLogado = usrOut; 
-        }
-      } catch (error) {
-        console.error("Erro na autenticação ou token expirado:", error);
-        localStorage.removeItem('token')
-        localStorage.removeItem('usuarioLogado')
-      }
-}
-if (!usuarioLogado) {
-  const salvo = localStorage.getItem('usuarioLogado');
-  if (salvo) {
-    usuarioLogado = JSON.parse(salvo);
-  }
-}
-//const apelido = usuarioLogado?.apelido || 'Visitante';
-</script>
-

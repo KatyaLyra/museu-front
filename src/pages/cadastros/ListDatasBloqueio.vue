@@ -20,8 +20,7 @@
 		bordered
 		>
 		<template v-slot:body-cell-acoes="props">
-			<q-td :props="props">
-			
+			<q-td :props="props">	
 				<q-btn 
 					flat 
 					round 
@@ -37,7 +36,7 @@
 		</template>
 		</q-table>
 		<div class="row justify-center q-pa-md">
-			<q-btn fab icon="add" color="primary" @click="adicionarNovo" />
+			<q-btn fab icon="add" color="primary" @click="adicionar" />
 		</div>    
       </q-card-section>
     </q-card>
@@ -45,6 +44,9 @@
 </template>
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const columns = [
   { name: 'dataBloqueio', label: 'Data', field: 'dataBloqueioFMT', align: 'left', sortable: true },
@@ -61,6 +63,17 @@ const pagination = ref({
 
 // Opções que o usuário pode escolher no seletor
 const linhasPorPagina = [5, 10, 20, 50, 0] // 0 geralmente significa "Todos"
+
+const adicionar = (row) => {
+	localStorage.setItem('dataBloqueio', JSON.stringify(row));
+	localStorage.setItem('operacao', 'I');
+	router.push({ name: 'databloqueiocadastro', params: { operacao: 'I'}})
+}
+const excluir = (row) => {
+	localStorage.setItem('dataBloqueio', JSON.stringify(row));
+	localStorage.setItem('operacao', 'D');
+	router.push({ name: 'databloqueiocadastro', params: { operacao: 'D'}})
+}
 </script>
 <script>
 import { api } from 'boot/axios'
@@ -78,9 +91,15 @@ export default {
 	},
 	methods: {
 		async consultarDatasBloqueio() {
+			const token = localStorage.getItem('token');
 			this.$q.loading.show({ spinnerColor: 'brown-6', delay: 400 })
 			try {
-				const response = await api.post('/visitas/listarBloqueiosAgendaAno')
+				const response = await api.post('/visitas/listarBloqueiosAgendaAno', {}, {
+						headers: {
+							'Authorization': `Bearer ${token}`,
+							'Content-Type': 'application/json'
+						}
+				});
 				this.datasBloqueio = response.data
 			} 
 			catch (error) {

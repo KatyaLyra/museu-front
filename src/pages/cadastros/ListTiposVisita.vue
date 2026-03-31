@@ -123,9 +123,15 @@ export default {
 	},
 	methods: {
 		async consultarTiposVisita() {
+			const token = localStorage.getItem('token');
 			this.$q.loading.show({ spinnerColor: 'brown-6', delay: 400 })
 			try {
-				const response = await api.post('/visitas/consultarTiposVisita')
+				const response = await api.post('/visitas/consultarTiposVisita',{}, {
+				headers: {
+					'Authorization': `Bearer ${token}`,
+					'Content-Type': 'application/json'
+				}
+				});
 				this.tiposVisita = response.data
 			} 
 			catch (error) {

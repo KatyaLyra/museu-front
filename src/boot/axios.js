@@ -7,12 +7,12 @@ const api = axios.create({ baseURL: 'http://localhost:8080' })
 export default boot(({ app, router }) => {
 
   // --- 1. INTERCEPTOR DE REQUISIÇÃO (ENVIO DO TOKEN) ---
+  /*
   api.interceptors.request.use(
     (config) => {
       const token = localStorage.getItem('token')
       if (token) {
-        // Garante que o token seja enviado no padrão Bearer
-        config.headers.Authorization = `Bearer ${token}`
+          api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       }
       return config
     },
@@ -20,7 +20,7 @@ export default boot(({ app, router }) => {
       return Promise.reject(error)
     }
   )
-
+*/
   // --- 2. INTERCEPTOR DE RESPOSTA (TRATAMENTO DE ERROS) ---
   api.interceptors.response.use(
     (response) => {

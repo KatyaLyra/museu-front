@@ -16,12 +16,13 @@
                   class="col-12"
                   filled
                   lazy-rules
+                  :readonly="isConsulta || isDelete"
                   :rules="[val => !!val || 'Nome da aula é obrigatório']"
                 />
               </div>
               <div class="row justify-center q-gutter-md">
                 <q-btn label="Cancelar" type="reset" color="primary" flat class="q-ml-sm" @click="voltar" />
-                <q-btn label="Confirmar" type="submit" color="primary" icon="save"/>
+                <q-btn label="Confirmar" type="submit" color="primary" icon="save"  v-if="!isConsulta"/>
               </div>
             </q-form>		
 
@@ -44,7 +45,15 @@ const form = reactive({
   descricao: ''
 })
 
-  const tituloPagina = computed(() => {
+const isConsulta = computed(() => {
+  return router.currentRoute.value.params.operacao === 'C'
+})
+
+const isDelete = computed(() => {
+  return router.currentRoute.value.params.operacao === 'D'
+})
+
+const tituloPagina = computed(() => {
   const operacao = router.currentRoute.value.params.operacao
   switch (operacao) {
     case 'I': return 'Inserir tipo de aula';
@@ -77,7 +86,7 @@ onMounted(() => {
 const voltar = () => {
     localStorage.removeItem('operacao')
     localStorage.removeItem('tipoAula')
-    router.push('/cadtiposaula')
+    router.push('/listtiposaula')
 }
 
 const onSubmit = async () => {
@@ -115,7 +124,7 @@ const onSubmit = async () => {
 
       localStorage.removeItem('operacao')
       localStorage.removeItem('tipoAula')
-      router.push('/cadtiposaula')
+      router.push('/listtiposaula')
 
     } 
     catch (error) {

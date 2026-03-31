@@ -53,7 +53,7 @@
               class="full-width"
               label="Entrar"
               :loading="loading"
-              @click="handleLogin"
+              @click="realizarLogin"
             />
           </q-card-actions>
 
@@ -66,52 +66,51 @@
   </q-page>
 </template>
 <script setup>
-import { api } from 'boot/axios'
-import { ref } from 'vue'
-import { useQuasar } from 'quasar'
-import { useRouter } from 'vue-router' // Adicionado
+import { ref } from 'vue';
+import { useAuthStore } from 'src/stores/auth';
+import { useRouter } from 'vue-router';
+import { useQuasar } from 'quasar';
 
-// Estados Reativos
-const router = useRouter()
-const $q = useQuasar()
+// 1. Instâncias necessárias
+const auth = useAuthStore();
+const router = useRouter();
+const $q = useQuasar();
+
+// 2. Declaração das variáveis reativas (Resolvendo os erros de 'not defined')
+const login = ref('katya.lyra@unicap.br');
+const senha = ref('');
+const loading = ref(false);
 const isPwd = ref(true)
 
-const login = ref('katya.lyra@unicap.br')
-const senha = ref('')
-
-const token = localStorage.getItem('token');
-if (token != undefined) {
-    router.push('/menu')
-}
-const loading = ref(false)
-
-// Função de Login
-const handleLogin = async () => {
+// 3. Função de Login
+const realizarLogin = async () => {
+  // Validação simples antes de tentar o login
   if (!login.value || !senha.value) {
-    $q.notify({
-      type: 'negative',
-      message: 'Por favor, preencha todos os campos.'
-    })
-    return
+    $q.notify({ type: 'warning', message: 'Preencha todos os campos' });
+    return;
   }
 
-  loading.value = true
-
-  const dados = {
-    login: login.value, // enviando como 'login' conforme seu backend pede
-    senha: senha.value
-  };
   try {
-   	const response = await api.post('/login', dados)
-    const token = response.data.token;
-    localStorage.setItem('token', token)
-    // Redireciona para o Index
-    router.push('/menu')   
-  } 
-  finally {
-    loading.value = false
+    loading.value = true;
+    
+    // Chama a action que configuramos na Store
+    await auth.autenticar({ 
+      login: login.value, 
+      senha: senha.value 
+    });
+    
+    $q.notify({ type: 'positive', message: 'Bem-vindo!' });
+    router.push('/menu'); 
+  } catch  {
+    // 'err' substituído para evitar o erro de 'unused-vars' se você não for usar o objeto de erro
+    $q.notify({ 
+      type: 'negative', 
+      message: 'Falha no login. Verifique suas credenciais.' 
+    });
+  } finally {
+    loading.value = false;
   }
-}
+};
 </script>
 
 <style scoped>
