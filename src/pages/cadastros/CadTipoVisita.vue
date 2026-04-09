@@ -202,7 +202,7 @@ formulario.value.descricao = tipoVisita.descricao
 const voltar = () => {
     localStorage.removeItem('operacao')
     localStorage.removeItem('tipoVisita')
-    router.push('/cadtiposvisita')
+    router.push('/listtiposvisita')
 }
 
 const onSubmit = async () => {

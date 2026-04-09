@@ -21,7 +21,7 @@
 		>
 		<template v-slot:body-cell-acoes="props">
 			<q-td :props="props">
-							<q-btn 
+				<q-btn 
 				flat 
 				round 
 				color="primary" 

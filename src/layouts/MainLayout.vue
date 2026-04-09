@@ -23,17 +23,17 @@
     </q-header>
 
     <q-drawer
-      v-if="auth.usuario !== null"
-      v-model="drawerState" 
-      side="left"
-      bordered
-      persistent
-      :mini="!leftDrawerOpen"
-      @mouseover="leftDrawerOpen = true"
-      @mouseleave="leftDrawerOpen = false"
-      :width="260"
-      :mini-width="80"
-      class="bg-grey-1"
+        v-if="auth.usuario !== null"
+        v-model="drawerState" 
+        side="left"
+        bordered
+        show-if-above
+        :mini="!leftDrawerOpen"
+        @mouseover="leftDrawerOpen = true"
+        @mouseleave="leftDrawerOpen = false"
+        :width="260"
+        :mini-width="80"
+        class="bg-grey-1"
     >
       <q-scroll-area class="fit">
         <q-list padding>
@@ -98,7 +98,7 @@ const toggleLeftDrawer = () => {
 
 const rotinasLinks = [
   { title: 'Home', icon: 'home', link: '/' },
-  { title: 'Usuários', icon: 'people', caption: 'Cadastro de usuários', link: '/cadusuarios' },
+  { title: 'Usuários', icon: 'people', caption: 'Cadastro de usuários', link: '/listusuarios' },
   { title: 'Tipos de visita', icon: 'visibility', caption: 'Cadastro de tipos de visita', link: '/listtiposvisita' },
   { title: 'Bloqueio de agenda', icon: 'event_busy', caption: 'Cadastro de bloqueio de agenda', link: '/listbloqueiodatas' },
   { title: 'Aulas de visita', icon: 'school', caption: 'Cadastro de aulas de visita', link: '/listtiposaula' }

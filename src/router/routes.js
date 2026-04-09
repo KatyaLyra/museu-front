@@ -18,7 +18,13 @@ const routes = [
       { path: '', component: () => import('pages/auth/LoginPage.vue') },
       { path: 'login', component: () => import('pages/auth/LoginPage.vue') },
       { path: 'menu', component: () => import('pages/MenuPage.vue')},
-      { path: 'cadusuarios', component: () => import('src/pages/cadastros/CadUsuarios.vue') },
+      { path: 'listusuarios', component: () => import('src/pages/cadastros/ListUsuarios.vue') },
+      { path: '/cadusuario/:operacao', 
+        name: 'usuariocadastro', 
+        component: () => import('src/pages/cadastros/CadUsuario.vue') 
+      },
+      { path: 'librotinas/:codigo', name: 'liberarRotinas',
+        component: () => import('pages/cadastros/LibRotinasPage.vue') }, 
       { path: 'listtiposaula', component: () => import('src/pages/cadastros/ListTiposAula.vue') },
       { path: '/cadtipoaula/:operacao', 
         name: 'tipoaulacadastro', 
@@ -36,10 +42,7 @@ const routes = [
       },
       { path: 'altusuario', component: () => import('pages/perfil/AltUsuario.vue') },
       { path: 'altsenha', component: () => import('pages/perfil/AltSenha.vue') },
-      { path: 'cadusuario/:codigo', name: 'cadastrousuario',
-        component: () => import('pages/cadastros/UsuarioPage.vue') },
-      { path: 'librotinas/:codigo', name: 'liberarRotinas',
-        component: () => import('pages/cadastros/LibRotinasPage.vue') }  
+
     ]
   },
 
