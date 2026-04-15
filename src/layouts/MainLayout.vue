@@ -97,11 +97,15 @@ const toggleLeftDrawer = () => {
 }
 
 const rotinasLinks = [
-  { title: 'Home', icon: 'home', link: '/' },
+  { title: 'Home', icon: 'home', link: '/menu' },
   { title: 'Usuários', icon: 'people', caption: 'Cadastro de usuários', link: '/listusuarios' },
   { title: 'Tipos de visita', icon: 'visibility', caption: 'Cadastro de tipos de visita', link: '/listtiposvisita' },
   { title: 'Bloqueio de agenda', icon: 'event_busy', caption: 'Cadastro de bloqueio de agenda', link: '/listbloqueiodatas' },
-  { title: 'Aulas de visita', icon: 'school', caption: 'Cadastro de aulas de visita', link: '/listtiposaula' }
+  { title: 'Aulas de visita', icon: 'school', caption: 'Cadastro de aulas de visita', link: '/listtiposaula' },
+  { title: 'Liberação de horários', icon: 'date_range', caption: 'Liberação de horários para visita', link: '/libhorarios' },
+  { title: 'Liberação de séries', icon: 'local_library', caption: 'Liberação de séries para visita', link: '/libseries' }
+  { title: 'Agendamento de visita', icon: 'event', caption: 'Agendamento de visita', link: '/cadvisita' }
+
 ]
 
 const perfilLinks = [

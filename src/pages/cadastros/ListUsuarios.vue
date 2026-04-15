@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center">
     <q-card style="width: 100%; max-width: 1200px" flat bordered>
-      <q-card-section class="bg-primary text-white">
+      <q-card-section class="bg-secondary text-white">
         <div class="text-h6">Cadastro de Usuários</div>
       </q-card-section>
       <q-separator />
@@ -96,16 +96,22 @@
 					@click="enviarSenha(props.row)" >
 					<q-tooltip>Enviar senha</q-tooltip>
 				</q-btn>
+<!--			
 				<q-btn 
 					flat round color="primary" 
 					icon="manage_accounts" size="sm" 
+					:disabled
 					@click="librots(props.row)" >
 					<q-tooltip>Liberar rotinas</q-tooltip>
 				</q-btn>
+-->					
 			</div>
 			</q-td>
 		</template>
 		</q-table>
+		<div class="row justify-center q-pa-md">
+			<q-btn fab icon="add" color="primary" @click="adicionar" />
+		</div>    
       </q-card-section>
     </q-card>
   </q-page>
@@ -145,6 +151,11 @@ const myFilterMethod = (rows, terms) => {
     row.nome.toLowerCase().includes(lowerTerms) 
 )}
 
+const adicionar = (row) => {
+	localStorage.setItem('usuario', JSON.stringify(row));
+	localStorage.setItem('operacao', 'I');
+	router.push({ name: 'usuariocadastro', params: { operacao: 'I'}})
+}
 const consultar = (row) => {
 	localStorage.setItem('usuario', JSON.stringify(row));
 	localStorage.setItem('operacao', 'C');
@@ -160,10 +171,11 @@ const excluir = (row) => {
 	localStorage.setItem('operacao', 'D');
 	router.push({ name: 'usuariocadastro', params: { operacao: 'D'}})
 }
+/*
 const librots = (row) => {
 	localStorage.setItem('usuario', JSON.stringify(row));
 	router.push({ name: 'liberarRotinas', params: { codigo: row.codigo } })
-}
+}*/
 </script>
 <script>
 import { api } from 'boot/axios'

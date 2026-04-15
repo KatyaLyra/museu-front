@@ -1,7 +1,7 @@
 <template>
   <q-page padding class="flex flex-center">
     <q-card style="width: 100%; max-width: 600px" flat bordered>
-      <q-card-section class="bg-primary text-white">
+      <q-card-section class="bg-secondary text-white">
         <div class="text-h6">Dados do Usuário</div>
         <div class="text-subtitle2">Atualize suas informações de perfil</div>
       </q-card-section>

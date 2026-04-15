@@ -15,7 +15,7 @@ const routes = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/auth/LoginPage.vue') },
+      { path: '', component: () => import('pages/MenuPage.vue') },
       { path: 'login', component: () => import('pages/auth/LoginPage.vue') },
       { path: 'menu', component: () => import('pages/MenuPage.vue')},
       { path: 'listusuarios', component: () => import('src/pages/cadastros/ListUsuarios.vue') },
@@ -42,7 +42,8 @@ const routes = [
       },
       { path: 'altusuario', component: () => import('pages/perfil/AltUsuario.vue') },
       { path: 'altsenha', component: () => import('pages/perfil/AltSenha.vue') },
-
+      { path: 'libhorarios', component: () => import('src/pages/cadastros/LibHorariosVisita.vue') },
+      { path: 'libseries', component: () => import('src/pages/cadastros/LibSeriesVisita.vue') },
     ]
   },
 

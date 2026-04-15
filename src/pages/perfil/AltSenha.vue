@@ -1,7 +1,7 @@
 <template>
   <q-page padding class="flex flex-center">
     <q-card style="width: 100%; max-width: 400px" flat bordered>
-      <q-card-section class="bg-primary text-white">
+      <q-card-section class="bg-secondary text-white">
         <div class="text-h6">Alterar Senha</div>
       </q-card-section>
       <q-separator />

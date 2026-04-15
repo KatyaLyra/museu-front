@@ -1,7 +1,7 @@
 <template>
  <q-page class="flex flex-center">
     <q-card style="width: 100%; max-width: 1200px" flat bordered>
-      <q-card-section class="bg-primary text-white">
+      <q-card-section class="bg-secondary text-white">
         <div class="text-h6">{{ tituloPagina }}</div>
       </q-card-section>
       <q-separator />
@@ -77,7 +77,11 @@
                   class="col-xs-12 col-sm-12" 
                   :readonly="isConsulta || isDelete"
                 />
-                <q-input v-model="formulario.matricula" label="RA ou Matrícula" filled class="col-5" />
+                <q-input v-model="formulario.matricula" 
+                  :readonly="isMatriculaBloqueada"
+                  label="RA ou Matrícula" 
+                  filled 
+                  class="col-xs-12 col-sm-12"  />
               </div>
 
               <div class="row justify-center q-gutter-md">
@@ -108,6 +112,12 @@ const isDelete = computed(() => {
 const isUpdate = computed(() => {
   return router.currentRoute.value.params.operacao === 'U'
 })
+
+const isMatriculaBloqueada = computed(() => {
+  return isConsulta.value || 
+         isDelete.value || 
+         formulario.value.grupo?.value == 4;
+});
 
 const tituloPagina = computed(() => {
 const operacao = router.currentRoute.value.params.operacao
@@ -150,8 +160,8 @@ onMounted(async () => {
           label: item.descricao,
           value: item.codigo
     }))
-    const grupoSelecionado = response.data.find(item => item.descricao === usuario.descricaoGrupoDefault);
-
+    const desc = usuario?.descricaoGrupoDefault ?? '';
+    const grupoSelecionado = response.data.find(item => item.descricao === desc);
  
   switch (operacao) {
     case 'I':
@@ -175,22 +185,19 @@ onMounted(async () => {
       formulario.value.isGerarSenha = false
       formulario.value.ddd       = usuario.celular.ddd
       formulario.value.celular   = usuario.celular.numero
-      
- //     formulario.value.grupo     = grupoSelecionado.descricao;
- //     formulario.value.descGrupoDefault = usuario.descricaoGrupoDefault
- 
+      formulario.value.grupo     = grupoSelecionado.descricao;
+      formulario.value.descGrupoDefault = usuario.descricaoGrupoDefault
       break
     case 'D':
       formulario.value.email = usuario.email
       formulario.value.emailConfirmacao = ''
       formulario.value.nome = usuario.nome
-      formulario.value.gerarSenha = false
+      formulario.value.apelido   = usuario.apelido
+      formulario.value.matricula = usuario.matricula
+      formulario.value.isGerarSenha = false
       formulario.value.ddd       = usuario.celular.ddd
       formulario.value.celular   = usuario.celular.numero
-      formulario.value.apelido   = usuario.apelido
-      formulario.value.grupo     = grupoSelecionado.descricao;
       formulario.value.descGrupoDefault = usuario.descricaoGrupoDefault
-      formulario.value.matricula = usuario.matricula
       break
     default:
       formulario.value.email = usuario.email
@@ -201,7 +208,6 @@ onMounted(async () => {
       formulario.value.celular   = usuario.celular.numero
       formulario.value.apelido   = usuario.apelido
       formulario.value.grupo     = grupoSelecionado.value;
-      formulario.value.grupo     = grupoSelecionado.descricao;
       formulario.value.descGrupoDefault = usuario.descricaoGrupoDefault
       formulario.value.matricula = usuario.matricula
   }
@@ -212,18 +218,31 @@ const onSubmit = async () => {
       const usuario = JSON.parse(localStorage.getItem('usuario'));
       const operacao = localStorage.getItem('operacao');
       const token = localStorage.getItem('token');
+      const isAdm = formulario.value.grupo?.value == 1 || formulario.value.grupo?.value == 2;
+      const isDefault = formulario.value.grupo?.value == 4;
+      const grupodefault = null;
+      if (usuario.grupoDefault != null) {
+          grupodefault.value = {
+                      codigo: formulario.value.grupo.value,
+                      descricao: formulario.value.grupo.label, 
+                      isAdm: isAdm,
+                      isDefault: isDefault
+                    }
+      }
+
       const usuarioIn = {
-        codigo: usuario.codigo,
-        email:  formulario.value.email,
-        nome:   formulario.value.nome,
-        isGerarSenha: formulario.value.gerarSenha,
-        celular:  {
-                    ddi: 55,
-                    ddd: formulario.value.ddd, 
-                    numero: formulario.value.celular 
-                  },
-        apelido: formulario.value.apelido,
-        matricula:  formulario.value.matricula
+          codigo: usuario?.codigo ?? 0,
+          email:  formulario.value.email,
+          nome:   formulario.value.nome,
+          isGerarSenha: formulario.value.gerarSenha,
+          celular:  {
+                      ddi: 55,
+                      ddd: formulario.value.ddd, 
+                      numero: formulario.value.celular 
+                    },
+          apelido: formulario.value.apelido,
+          matricula:  formulario.value.matricula,
+          grupoDefault: grupodefault?.value ?? null
       }
 
       await api.post('/acesso/cadUsuario', usuarioIn , {
@@ -262,7 +281,6 @@ const onSubmit = async () => {
 
 // FUNÇÃO DE voltar
 const voltar = () => {
-    localStorage.removeItem('operacao')
     localStorage.removeItem('usuario')
     router.push('/listusuarios')
 }

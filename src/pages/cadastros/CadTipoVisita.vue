@@ -1,7 +1,7 @@
 <template>
  <q-page class="flex flex-center">
     <q-card style="width: 100%; max-width: 1200px" flat bordered>
-      <q-card-section class="bg-primary text-white">
+      <q-card-section class="bg-secondary text-white">
         <div class="text-h6">{{ tituloPagina }}</div>
       </q-card-section>
       <q-separator />
@@ -221,7 +221,6 @@ const onSubmit = async () => {
           valorAulaVisita:   formulario.value.valor,
           qtdAulaVisita:     formulario.value.qtdAulas       
       }
- //     const response = 
       await api.post('/visitas/cadTipoVisita', tipoVisitaIn , {
         headers: {
           'Authorization': `Bearer ${token}`,
