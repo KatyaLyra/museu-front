@@ -67,8 +67,8 @@
           </div>
 
           <div class="row justify-end q-mt-lg">
-            <q-btn label="Descartar" type="reset" color="primary" flat class="q-ml-sm" to="/" />
-            <q-btn label="Atualizar Perfil" type="submit" color="primary" icon="check" />
+            <q-btn label="Cancelar" type="reset" color="primary" flat class="q-ml-sm" to="/" />
+            <q-btn label="Confirmar"   type="submit" color="primary" icon="save" />
           </div>
         </q-form>
       </q-card-section>

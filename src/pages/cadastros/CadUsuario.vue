@@ -85,8 +85,8 @@
               </div>
 
               <div class="row justify-center q-gutter-md">
-                <q-btn label="Confirmar" type="submit" color="primary" icon="save" v-if="!isConsulta"/>
                 <q-btn label="Cancelar" type="reset" color="primary" flat class="q-ml-sm" @click="voltar" />
+                <q-btn label="Confirmar" type="submit" color="primary" icon="save" v-if="!isConsulta"/>
               </div>
             </q-form>		
 

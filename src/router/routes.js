@@ -23,8 +23,8 @@ const routes = [
         name: 'usuariocadastro', 
         component: () => import('src/pages/cadastros/CadUsuario.vue') 
       },
-      { path: 'librotinas/:codigo', name: 'liberarRotinas',
-        component: () => import('pages/cadastros/LibRotinasPage.vue') }, 
+      { path: 'librotinasUsr/:codigo', name: 'liberarRotinasUsr',
+        component: () => import('pages/cadastros/LibRotinasUsr.vue') }, 
       { path: 'listtiposaula', component: () => import('src/pages/cadastros/ListTiposAula.vue') },
       { path: '/cadtipoaula/:operacao', 
         name: 'tipoaulacadastro', 
@@ -44,6 +44,7 @@ const routes = [
       { path: 'altsenha', component: () => import('pages/perfil/AltSenha.vue') },
       { path: 'libhorarios', component: () => import('src/pages/cadastros/LibHorariosVisita.vue') },
       { path: 'libseries', component: () => import('src/pages/cadastros/LibSeriesVisita.vue') },
+      { path: 'incvisita', component: () => import('src/pages/cadastros/IncVisita.vue') }
     ]
   },
 

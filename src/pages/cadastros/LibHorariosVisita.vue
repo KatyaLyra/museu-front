@@ -31,12 +31,12 @@
         <q-btn color="negative" label="Excluir" icon="delete" @click="deleteSelected" />
       </template>
 		<div class="row justify-center q-gutter-md">
-                <q-btn label="Enviar" 
+			    <q-btn label="Cancelar" type="reset" color="primary" flat class="q-ml-sm" @click="voltar" />
+                <q-btn label="Confirmar" 
 				       type="submit" color="primary" icon="save" 
 					   @click="submitLibHorarios"
 					   :disable="selected.length === 0"
 					   />
-                <q-btn label="Cancelar" type="reset" color="primary" flat class="q-ml-sm" @click="voltar" />
         </div>
       </q-card-section>
     </q-card>

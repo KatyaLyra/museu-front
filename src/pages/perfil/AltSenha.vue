@@ -47,7 +47,7 @@
 
           <div class="row justify-end q-mt-md">
             <q-btn label="Cancelar" type="reset" color="primary" flat class="q-ml-sm" to="/" />
-            <q-btn label="Salvar Nova Senha" type="submit" color="primary" icon="save" />
+            <q-btn label="Confirmar"   type="submit" color="primary" icon="save" />
           </div>
         </q-form>
       </q-card-section>

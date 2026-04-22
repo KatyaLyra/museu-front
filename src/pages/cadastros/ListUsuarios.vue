@@ -96,15 +96,13 @@
 					@click="enviarSenha(props.row)" >
 					<q-tooltip>Enviar senha</q-tooltip>
 				</q-btn>
-<!--			
 				<q-btn 
 					flat round color="primary" 
 					icon="manage_accounts" size="sm" 
 					:disabled
-					@click="librots(props.row)" >
+					@click="librotsUsr(props.row)" >
 					<q-tooltip>Liberar rotinas</q-tooltip>
-				</q-btn>
--->					
+				</q-btn>				
 			</div>
 			</q-td>
 		</template>
@@ -171,11 +169,10 @@ const excluir = (row) => {
 	localStorage.setItem('operacao', 'D');
 	router.push({ name: 'usuariocadastro', params: { operacao: 'D'}})
 }
-/*
-const librots = (row) => {
+const librotsUsr = (row) => {
 	localStorage.setItem('usuario', JSON.stringify(row));
-	router.push({ name: 'liberarRotinas', params: { codigo: row.codigo } })
-}*/
+	router.push({ name: 'liberarRotinasUsr', params: { codigo: row.codigo } })
+}
 </script>
 <script>
 import { api } from 'boot/axios'

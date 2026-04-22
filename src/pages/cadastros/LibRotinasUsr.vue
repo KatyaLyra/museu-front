@@ -1,17 +1,16 @@
 <template>
   <q-page class="flex flex-center">
     <q-card style="width: 100%; max-width: 1200px" flat bordered>
-        <q-card-section>
-          <div class="primary text-body1">{{usuario.nome}}</div>
-          <div class="text-body2">{{ usuario.email }}</div>
-        </q-card-section>
-
-        <q-separator />
+		<q-card-section class="bg-secondary text-white">
+        <div class="text-h6">Liberação de rotinas para usuário - {{usuario.nome}}</div>
+      </q-card-section>
+      <q-separator />
       <q-card-section>	
 		<q-table
 		hide-header
 		:rows="rotinasLiberadas"
 		:columns="columns"
+		sortable: true
 		rows-per-page-label="Registros por página:"
   		no-data-label="Nenhum dado disponível"
   		no-results-label="Nenhum registro encontrado"
@@ -23,23 +22,34 @@
 		selection="multiple"
         v-model:selected="selected"
 		>
-		</q-table>
-		<template v-slot:body-selection="scope">
-			<q-checkbox 
-			v-model="scope.selected" 
-			:disable="scope.row.liberadaGrupo" 
-
-			/>
+		<template v-slot:body-cell-grupo="props">
+		<q-td :props="props">
+				<q-btn 
+				    v-if="props.row.liberadaGrupo === true"
+					flat round color="primary" 
+					icon="people" size="sm" 
+					@click.stop >
+					<q-tooltip>Liberada pelo grupo</q-tooltip>
+				</q-btn>
+		</q-td>
 		</template>
+		</q-table>
+		<template v-slot:top-selection>
+        <div class="text-subtitle1">
+          {{ selected.length }} {{ selected.length === 1 ? 'item selecionado' : 'itens selecionados' }}
+        </div>
+        <q-space />
+        <q-btn color="negative" label="Excluir" icon="delete" @click="deleteSelected" />
+      </template>
 		<div class="row justify-center q-gutter-md">
-                <q-btn label="Enviar selecionados" 
+			<q-btn label="Cancelar" type="reset" color="primary" flat class="q-ml-sm" @click="voltar" />
+                <q-btn label="Confirmar" 
 				       type="submit" color="primary" icon="save" 
 					   v-if="!isConsulta"
 					   @click="submitLibRotinas"
 					   :disable="selected.length === 0"
 					   />
-                <q-btn label="Cancelar" type="reset" color="primary" flat class="q-ml-sm" @click="voltar" />
-        </div>
+         </div>
       </q-card-section>
     </q-card>
   </q-page>
@@ -55,7 +65,7 @@ const usuario = JSON.parse(localStorage.getItem('usuario'));
 
 const columns = [
   { name: 'descricao', label: 'Descrição', field: 'descricao', align: 'left', sortable: true },
-  { name: 'acoes', label: '', field: 'acoes', align: 'center',style: 'width: 100px', headerStyle: 'width: 100px' } // Coluna para os botões
+  { name: 'grupo', label: '', field: 'grupo', align: 'center',style: 'width: 100px', headerStyle: 'width: 100px' } // Coluna para os botões
 ]
 
 const pagination = ref({
@@ -135,8 +145,7 @@ const submitLibRotinas = async () => {
           codigo: usuario.codigo,
           email:  usuario.email,
           nome:   usuario.nome,
-		  rotinas:  rotinas.value,
-		  selecionadas: selected.value
+		  rotinas: selected.value
       }
       await api.post('/acesso/liberarRotinas', dadosIn , {
         headers: {

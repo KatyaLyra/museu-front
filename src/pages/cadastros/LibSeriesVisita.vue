@@ -17,7 +17,7 @@
 		v-model:pagination="pagination"
   		:rows-per-page-options="linhasPorPagina"
 		binary-state-sort
-		row-key="codigo"
+		row-key="codigoCompleto"
 		flat
 		selection="multiple"
         v-model:selected="selected"
@@ -31,12 +31,12 @@
         <q-btn color="negative" label="Excluir" icon="delete" @click="deleteSelected" />
       </template>
 		<div class="row justify-center q-gutter-md">
-                <q-btn label="Enviar" 
-				       type="submit" color="primary" icon="save" 
-					   @click="submitLibSeries"
-					   :disable="selected.length === 0"
-					   />
-                <q-btn label="Cancelar" type="reset" color="primary" flat class="q-ml-sm" @click="voltar" />
+			<q-btn label="Cancelar" type="reset" color="primary" flat class="q-ml-sm" @click="voltar" />
+			<q-btn label="Confirmar" 
+					type="submit" color="primary" icon="save" 
+					@click="submitLibSeries"
+					:disable="selected.length === 0"
+					/>
         </div>
       </q-card-section>
     </q-card>
@@ -122,7 +122,7 @@ export default {
 				});
 				this.seriesVisita = response.data;				
 				series.value = response.data;
-				selected.value = series.value.filter(h => h.comVisitaLiberada);
+				selected.value = series.value.filter(h => h.comAgendaLiberada);
 			} 
 			catch (error) {
 				console.log('Falha de conexão com o servidor'+error);
